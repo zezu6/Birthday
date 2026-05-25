@@ -1,29 +1,22 @@
-from datetime import datetime
+from datetime import date, datetime
+from secrets import token_urlsafe
 
 
 def isleap(year: int) -> bool:
     return (year % 4 == 0) and (year % 100 != 0 or year % 400 == 0)
 
 
-today = datetime.now().date()
+today = date.today()
 while True:
-    response = input("Enter your birthday (dd.mm.yyyy): ")
+    response = input("Enter your birthday (dd/mm/yyyy): ")
     try:
-        birthday = datetime.strptime(response, "%d.%m.%Y")
+        birthday = datetime.strptime(response, "%d/%m/%Y").date()
         break
     except ValueError:
-        print("dumbass")
+        print("try again")
 
-td_days = today.timetuple().tm_yday
-bd_days = birthday.timetuple().tm_yday
-days_left = bd_days - td_days
+next_bd = birthday.replace(year=today.year)
+delta = (next_bd - today).days
 
-if days_left < 0:
-    birthday.replace(year=birthday.year + 1)
-    bd_days = birthday.timetuple().tm_yday
 
-    days_left = 365 - td_days + bd_days
-    if isleap(today.year):
-        days_left = 366 - td_days + bd_days
-
-print(days_left)
+print(f"Your birthday is in {delta} days. You'll be {next_bd.year - birthday.year} years old.")
